@@ -1,5 +1,5 @@
-import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/time';
-import { Session } from '../models/session';
+import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/time.js';
+import { Session } from '../models/session.js';
 
 export const createSession = userId => {
   const accessToken = crypto.randomUUID();
@@ -9,8 +9,8 @@ export const createSession = userId => {
     userId,
     accessToken,
     refreshToken,
-    accessTokenValidUntil: new Date(Date.now + FIFTEEN_MINUTES),
-    refreshTokenValidUntil: new Date(Date.now + ONE_DAY),
+    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+    refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
   });
 };
 
