@@ -29,13 +29,13 @@ export const loginUser = async (req, res) => {
 
   const existingUser = await User.findOne({ email });
 
-  if (existingUser) {
+  if (!existingUser) {
     throw createHttpError(401, 'Invalid credentials');
   }
 
   const isValidPassword = await bcrypt.compare(password, existingUser.password);
 
-  if (isValidPassword) {
+  if (!isValidPassword) {
     throw createHttpError(401, 'Invalid credentials');
   }
 
@@ -59,8 +59,8 @@ export const refreshUserSession = async (req, res) => {
 
   const isSessionTokenExpired = session.refreshTokenValidUntil < new Date();
 
-  if (!isSessionTokenExpired) {
-    session.deleteOne();
+  if (isSessionTokenExpired) {
+    await session.deleteOne();
     res.clearCookie('sessionId');
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
@@ -69,7 +69,7 @@ export const refreshUserSession = async (req, res) => {
 
   await session.deleteOne();
 
-  const newSession = createSession(session.userId);
+  const newSession = await createSession(session.userId);
 
   setSessionCookies(res, newSession);
 
